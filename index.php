@@ -7,23 +7,36 @@ if (isLoggedIn()) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = isset($_POST['username']) ? $_POST['username'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
     
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
-    
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        $_SESSION['first_name'] = $user['first_name'];
-        $_SESSION['last_name'] = $user['last_name'];
-        
-        redirect(getDashboardUrl());
+    if (empty($username) || empty($password)) {
+        $error = "Please enter both username and password!";
     } else {
-        $error = "Invalid username or password!";
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+            $stmt->execute([$username]);
+            $user = $stmt->fetch();
+            
+            // Debug: Check if user exists
+            if (!$user) {
+                $error = "User not found. Please check your username.";
+            } elseif (!isset($user['password'])) {
+                $error = "Database error: Password field missing.";
+            } elseif (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['first_name'] = $user['first_name'];
+                $_SESSION['last_name'] = $user['last_name'];
+                
+                redirect(getDashboardUrl());
+            } else {
+                $error = "Invalid password. Please try again.";
+            }
+        } catch (PDOException $e) {
+            $error = "Database error: " . $e->getMessage();
+        }
     }
 }
 ?>
@@ -33,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Student Grade Management</title>
+    <title>Login - Student Record Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">

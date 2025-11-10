@@ -11,7 +11,7 @@ try {
 } catch (PDOException $e) {
     // If schools table doesn't exist, redirect to installation
     if (strpos($e->getMessage(), "doesn't exist") !== false) {
-        header("Location: install_v2.php");
+        header("Location: setup/install_complete_system.php");
         exit();
     }
     $schools = [];
@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_registration']
                             <label class="form-label required">Nationality</label>
                             <select class="form-select" name="nationality" required>
                                 <option value="">Select Nationality</option>
-                                <option value="Tanzanian" selected>Tanzanian</option>
+                                <option value="Ugandan" selected>Ugandan</option>
                                 <option value="Kenyan">Kenyan</option>
                                 <option value="Ugandan">Ugandan</option>
                                 <option value="Other">Other</option>
@@ -300,14 +300,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_registration']
                         <div class="col-md-6 mb-3">
                             <label class="form-label required">Phone Number</label>
                             <input type="tel" class="form-control" name="phone" required 
-                                   placeholder="+255 712 345 678">
+                                   placeholder="+256 712 345 678">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Alternative Phone</label>
                             <input type="tel" class="form-control" name="alternative_phone" 
-                                   placeholder="+255 754 987 654">
+                                   placeholder="+256 754 987 654">
                         </div>
                     </div>
                     <div class="row">
@@ -342,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_registration']
                         <div class="col-md-6 mb-3">
                             <label class="form-label required">Country</label>
                             <select class="form-select" name="country" required>
-                                <option value="Tanzania" selected>Tanzania</option>
+                                <option value="Uganda" selected>Uganda</option>
                                 <option value="Kenya">Kenya</option>
                                 <option value="Uganda">Uganda</option>
                             </select>

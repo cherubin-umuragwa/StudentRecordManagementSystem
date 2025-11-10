@@ -2,11 +2,11 @@
 include 'includes/conn.php';
 include 'includes/functions.php';
 
-if (!isLoggedIn() || !hasRole('teacher')) {
+if (!isLoggedIn() || !hasRole('lecturer')) {
     redirect('index.php');
 }
 
-$teacher_id = $_SESSION['user_id'];
+$lecturer_id = $_SESSION['user_id'];
 $message = '';
 $message_type = '';
 
@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_classroom'])) 
     $name = $_POST['name'];
     $description = $_POST['description'];
     
-    $stmt = $pdo->prepare("INSERT INTO classrooms (name, description, teacher_id) VALUES (?, ?, ?)");
-    $stmt->execute([$name, $description, $teacher_id]);
+    $stmt = $pdo->prepare("INSERT INTO classrooms (name, description, lecturer_id) VALUES (?, ?, ?)");
+    $stmt->execute([$name, $description, $lecturer_id]);
     $message = "Classroom created successfully!";
     $message_type = "success";
 }
@@ -60,9 +60,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'remove_student' && isset($_GE
 if (isset($_GET['action']) && $_GET['action'] === 'delete_classroom' && isset($_GET['id'])) {
     $classroom_id = $_GET['id'];
     
-    // Verify the classroom belongs to the teacher
-    $check_stmt = $pdo->prepare("SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?");
-    $check_stmt->execute([$classroom_id, $teacher_id]);
+    // Verify the classroom belongs to the lecturer
+    $check_stmt = $pdo->prepare("SELECT * FROM classrooms WHERE id = ? AND lecturer_id = ?");
+    $check_stmt->execute([$classroom_id, $lecturer_id]);
     
     if ($check_stmt->rowCount() > 0) {
         $result = deleteClassroom($pdo, $classroom_id);
@@ -79,10 +79,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete_classroom' && isset($_
     }
 }
 
-// Get teacher's classrooms
-$classrooms = $pdo->prepare("SELECT * FROM classrooms WHERE teacher_id = ?");
-$classrooms->execute([$teacher_id]);
-$teacher_classrooms = $classrooms->fetchAll();
+// Get lecturer's classrooms
+$classrooms = $pdo->prepare("SELECT * FROM classrooms WHERE lecturer_id = ?");
+$classrooms->execute([$lecturer_id]);
+$lecturer_classrooms = $classrooms->fetchAll();
 
 // Get all students
 $students = $pdo->query("SELECT * FROM users WHERE role = 'student' ORDER BY first_name, last_name")->fetchAll();
@@ -100,7 +100,7 @@ if (isset($_GET['view_students']) && isset($_GET['classroom_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Classrooms - Student Grade Management</title>
+    <title>Manage Classrooms - Student Record Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
@@ -108,14 +108,14 @@ if (isset($_GET['view_students']) && isset($_GET['classroom_id'])) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
-            <a class="navbar-brand" href="teacher.php">
-                <i class="fas fa-chalkboard-teacher"></i> Teacher Portal
+            <a class="navbar-brand" href="lecturer.php">
+                <i class="fas fa-chalkboard-teacher"></i> Lecturer Portal
             </a>
             <div class="navbar-nav ms-auto">
                 <span class="navbar-text me-3">
                     Welcome, <?php echo $_SESSION['first_name']; ?>
                 </span>
-                <a class="nav-link" href="teacher.php">Dashboard</a>
+                <a class="nav-link" href="lecturer.php">Dashboard</a>
                 <a class="nav-link" href="logout.php">Logout</a>
             </div>
         </div>
@@ -135,7 +135,7 @@ if (isset($_GET['view_students']) && isset($_GET['classroom_id'])) {
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4>
                         <i class="fas fa-users"></i> 
-                        Students in <?php echo $teacher_classrooms[array_search($_GET['classroom_id'], array_column($teacher_classrooms, 'id'))]['name']; ?>
+                        Students in <?php echo $lecturer_classrooms[array_search($_GET['classroom_id'], array_column($lecturer_classrooms, 'id'))]['name']; ?>
                     </h4>
                     <a href="classroom.php" class="btn btn-secondary">Back to Classrooms</a>
                 </div>
@@ -209,7 +209,7 @@ if (isset($_GET['view_students']) && isset($_GET['classroom_id'])) {
                                     <label class="form-label">Select Classroom</label>
                                     <select class="form-select" name="classroom_id" required>
                                         <option value="">Choose classroom...</option>
-                                        <?php foreach($teacher_classrooms as $classroom): ?>
+                                        <?php foreach($lecturer_classrooms as $classroom): ?>
                                         <option value="<?php echo $classroom['id']; ?>"><?php echo $classroom['name']; ?></option>
                                         <?php endforeach; ?>
                                     </select>
@@ -253,7 +253,7 @@ if (isset($_GET['view_students']) && isset($_GET['classroom_id'])) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($teacher_classrooms as $classroom): 
+                                        <?php foreach($lecturer_classrooms as $classroom): 
                                             // Count students in this classroom
                                             $student_count = $pdo->prepare("SELECT COUNT(*) FROM classroom_students WHERE classroom_id = ?");
                                             $student_count->execute([$classroom['id']]);

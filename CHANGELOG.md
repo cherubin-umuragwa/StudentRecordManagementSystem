@@ -31,20 +31,20 @@ All notable changes to this project will be documented in this file.
 - API endpoints moved to `api/` directory
 - Installation scripts moved to `setup/` directory
 - Updated all file paths to reflect new structure
-- `register_v2.php` renamed to `register.php`
+- Single registration file: `register.php`
 - Improved security with environment-based configuration
+- No version-specific files (clean, single versions only)
 
 ### Consolidated
 - `database/schema.sql` - Single unified database schema
-  - Merged: `student_grade_management.sql`
+  - Merged: `student_record_management.sql`
   - Merged: `database_updates.sql`
-  - Merged: `database_updates_v2.sql`
   - Merged: `database_course_registration.sql`
 - `database/seed.sql` - Sample data for testing
 
 ### Removed
 - Duplicate database files
-- Old `register.php` (replaced by `register_v2.php` → `register.php`)
+- All version-specific files (v2, v3, etc.)
 - Redundant documentation files:
   - `COURSE_DISPLAY_FIX.md`
   - `COURSE_FILTERING_UPDATE.md`
@@ -55,7 +55,6 @@ All notable changes to this project will be documented in this file.
   - `QUICK_START_GUIDE.md`
   - `REGISTRAR_DASHBOARD_UPDATE.md`
   - `REGISTRATION_FEATURE.md`
-  - `REGISTRATION_V2_README.md`
   - `START_HERE.md`
   - `STUDENT_DASHBOARD_COURSES_UPDATE.md`
   - `WORKFLOW_DIAGRAM.txt`

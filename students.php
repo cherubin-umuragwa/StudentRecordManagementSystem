@@ -19,11 +19,11 @@ $student = $student_info->fetch();
 // Get student's grades
 $grades_stmt = $pdo->prepare("
     SELECT g.*, s.name as subject_name, c.name as classroom_name, 
-           u.first_name as teacher_first, u.last_name as teacher_last 
+           u.first_name as lecturer_first, u.last_name as lecturer_last 
     FROM grades g 
     JOIN subjects s ON g.subject_id = s.id 
     JOIN classrooms c ON g.classroom_id = c.id 
-    JOIN users u ON g.teacher_id = u.id 
+    JOIN users u ON g.lecturer_id = u.id 
     WHERE g.student_id = ? 
     ORDER BY g.graded_at DESC
 ");
@@ -93,7 +93,7 @@ foreach ($enrolled_courses as $course) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal - Student Grade Management</title>
+    <title>Student Portal - Student Record Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
@@ -434,7 +434,7 @@ foreach ($enrolled_courses as $course) {
                                                         <?php echo ucfirst($grade['grade_type']); ?>
                                                     </span>
                                                 </td>
-                                                <td><?php echo $grade['teacher_first'] . ' ' . $grade['teacher_last']; ?></td>
+                                                <td><?php echo $grade['lecturer_first'] . ' ' . $grade['lecturer_last']; ?></td>
                                                 <td><?php echo $grade['remarks']; ?></td>
                                                 <td><?php echo date('M j, Y', strtotime($grade['graded_at'])); ?></td>
                                             </tr>

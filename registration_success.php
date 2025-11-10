@@ -48,7 +48,7 @@ $username = isset($_GET['username']) ? $_GET['username'] : '';
             <small class="text-muted">
                 If you have any questions, please contact:<br>
                 <i class="fas fa-envelope"></i> registrar@institution.edu<br>
-                <i class="fas fa-phone"></i> +255 123 456 789
+                <i class="fas fa-phone"></i> +256 123 456 789
             </small>
         </div>
     </div>

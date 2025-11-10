@@ -2,11 +2,11 @@
 include 'includes/conn.php';
 include 'includes/functions.php';
 
-if (!isLoggedIn() || !hasRole('teacher')) {
+if (!isLoggedIn() || !hasRole('lecturer')) {
     redirect('index.php');
 }
 
-$teacher_id = $_SESSION['user_id'];
+$lecturer_id = $_SESSION['user_id'];
 $message = '';
 $message_type = '';
 
@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_grade'])) {
     $grade_type = $_POST['grade_type'];
     $remarks = $_POST['remarks'];
     
-    $stmt = $pdo->prepare("INSERT INTO grades (student_id, subject_id, classroom_id, teacher_id, grade, grade_type, remarks) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$student_id, $subject_id, $classroom_id, $teacher_id, $grade, $grade_type, $remarks]);
+    $stmt = $pdo->prepare("INSERT INTO grades (student_id, subject_id, classroom_id, lecturer_id, grade, grade_type, remarks) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$student_id, $subject_id, $classroom_id, $lecturer_id, $grade, $grade_type, $remarks]);
     $message = "Grade added successfully!";
     $message_type = "success";
 }
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_grade'])) {
 if (isset($_GET['action']) && $_GET['action'] === 'delete_grade' && isset($_GET['id'])) {
     $grade_id = $_GET['id'];
     
-    $result = deleteGrade($pdo, $grade_id, $teacher_id);
+    $result = deleteGrade($pdo, $grade_id, $lecturer_id);
     if ($result === true) {
         $message = "Grade deleted successfully!";
         $message_type = "success";
@@ -39,24 +39,24 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete_grade' && isset($_GET[
     }
 }
 
-// Get teacher's classrooms and students
-$classrooms = $pdo->prepare("SELECT * FROM classrooms WHERE teacher_id = ?");
-$classrooms->execute([$teacher_id]);
-$teacher_classrooms = $classrooms->fetchAll();
+// Get lecturer's classrooms and students
+$classrooms = $pdo->prepare("SELECT * FROM classrooms WHERE lecturer_id = ?");
+$classrooms->execute([$lecturer_id]);
+$lecturer_classrooms = $classrooms->fetchAll();
 
 // Get subjects
 $subjects = $pdo->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
 
-// Get students in teacher's classrooms
+// Get students in lecturer's classrooms
 $students_stmt = $pdo->prepare("
     SELECT DISTINCT u.id, u.first_name, u.last_name 
     FROM users u 
     JOIN classroom_students cs ON u.id = cs.student_id 
     JOIN classrooms c ON cs.classroom_id = c.id 
-    WHERE c.teacher_id = ? 
+    WHERE c.lecturer_id = ? 
     ORDER BY u.first_name
 ");
-$students_stmt->execute([$teacher_id]);
+$students_stmt->execute([$lecturer_id]);
 $students = $students_stmt->fetchAll();
 
 // Get grades for viewing
@@ -66,10 +66,10 @@ $grades_stmt = $pdo->prepare("
     JOIN users u ON g.student_id = u.id 
     JOIN subjects s ON g.subject_id = s.id 
     JOIN classrooms c ON g.classroom_id = c.id 
-    WHERE g.teacher_id = ? 
+    WHERE g.lecturer_id = ? 
     ORDER BY g.graded_at DESC
 ");
-$grades_stmt->execute([$teacher_id]);
+$grades_stmt->execute([$lecturer_id]);
 $grades = $grades_stmt->fetchAll();
 
 // Calculate statistics
@@ -89,7 +89,7 @@ if ($total_grades > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Grades - Student Grade Management</title>
+    <title>Manage Grades - Student Record Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
@@ -97,14 +97,14 @@ if ($total_grades > 0) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-info">
         <div class="container">
-            <a class="navbar-brand" href="teacher.php">
+            <a class="navbar-brand" href="lecturer.php">
                 <i class="fas fa-edit"></i> Grade Management
             </a>
             <div class="navbar-nav ms-auto">
                 <span class="navbar-text me-3">
                     Welcome, <?php echo $_SESSION['first_name']; ?>
                 </span>
-                <a class="nav-link" href="teacher.php">Dashboard</a>
+                <a class="nav-link" href="lecturer.php">Dashboard</a>
                 <a class="nav-link" href="logout.php">Logout</a>
             </div>
         </div>
@@ -154,7 +154,7 @@ if ($total_grades > 0) {
                                         <label class="form-label">Classroom</label>
                                         <select class="form-select" name="classroom_id" required>
                                             <option value="">Select classroom...</option>
-                                            <?php foreach($teacher_classrooms as $classroom): ?>
+                                            <?php foreach($lecturer_classrooms as $classroom): ?>
                                             <option value="<?php echo $classroom['id']; ?>"><?php echo $classroom['name']; ?></option>
                                             <?php endforeach; ?>
                                         </select>
@@ -214,7 +214,7 @@ if ($total_grades > 0) {
                             </div>
                             <div class="col-4">
                                 <div class="border rounded p-3">
-                                    <h3 class="text-info"><?php echo count($teacher_classrooms); ?></h3>
+                                    <h3 class="text-info"><?php echo count($lecturer_classrooms); ?></h3>
                                     <small>Classrooms</small>
                                 </div>
                             </div>

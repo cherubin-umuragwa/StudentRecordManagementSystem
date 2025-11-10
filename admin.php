@@ -159,7 +159,7 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 
 // Get statistics and data
 $total_students = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'student'")->fetchColumn();
-$total_teachers = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'teacher'")->fetchColumn();
+$total_lecturers = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'lecturer'")->fetchColumn();
 $total_classrooms = $pdo->query("SELECT COUNT(*) FROM classrooms")->fetchColumn();
 $total_subjects = $pdo->query("SELECT COUNT(*) FROM subjects")->fetchColumn();
 
@@ -167,7 +167,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY role, first_name")->fetchAll(
 $subjects = $pdo->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
 $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name 
                           FROM classrooms c 
-                          LEFT JOIN users u ON c.teacher_id = u.id 
+                          LEFT JOIN users u ON c.lecturer_id = u.id 
                           ORDER BY c.name")->fetchAll();
 ?>
 
@@ -176,7 +176,7 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Student Grade Management</title>
+    <title>Admin Dashboard - Student Record Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
@@ -260,8 +260,8 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between">
                                             <div>
-                                                <h4><?php echo $total_teachers; ?></h4>
-                                                <p>Total Teachers</p>
+                                                <h4><?php echo $total_lecturers; ?></h4>
+                                                <p>Total Lecturers</p>
                                             </div>
                                             <i class="fas fa-chalkboard-teacher fa-2x"></i>
                                         </div>
@@ -338,7 +338,7 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
                                                 <thead>
                                                     <tr>
                                                         <th>Classroom</th>
-                                                        <th>Teacher</th>
+                                                        <th>Lecturer</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -386,7 +386,9 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
                                             <select class="form-select mb-3" name="role" required>
                                                 <option value="">Select Role</option>
                                                 <option value="admin">Admin</option>
-                                                <option value="teacher">Teacher</option>
+                                                <option value="lecturer">Lecturer</option>
+                                                <option value="accountant">Accountant</option>
+                                                <option value="registrar">Registrar</option>
                                                 <option value="student">Student</option>
                                             </select>
                                         </div>
@@ -436,7 +438,9 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
                                                     <span class="badge bg-<?php 
                                                         switch($user['role']) {
                                                             case 'admin': echo 'danger'; break;
-                                                            case 'teacher': echo 'success'; break;
+                                                            case 'lecturer': echo 'success'; break;
+                                                            case 'accountant': echo 'warning'; break;
+                                                            case 'registrar': echo 'info'; break;
                                                             case 'student': echo 'primary'; break;
                                                             default: echo 'secondary';
                                                         }
@@ -560,7 +564,7 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
                                                 <th>ID</th>
                                                 <th>Name</th>
                                                 <th>Description</th>
-                                                <th>Teacher</th>
+                                                <th>Lecturer</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -634,7 +638,9 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
                             <label class="form-label">Role</label>
                             <select class="form-select" name="role" id="edit_role" required>
                                 <option value="admin">Admin</option>
-                                <option value="teacher">Teacher</option>
+                                <option value="lecturer">Lecturer</option>
+                                <option value="accountant">Accountant</option>
+                                <option value="registrar">Registrar</option>
                                 <option value="student">Student</option>
                             </select>
                         </div>

@@ -1,4 +1,4 @@
-# Student Grade Management System
+# Student Record Management System
 
 A comprehensive web-based student management system built with PHP and MySQL. This system handles student registration, course management, grade tracking, and academic administration.
 
@@ -30,7 +30,8 @@ New to this project? Check out the [Quick Start Guide](QUICKSTART.md) to get up 
 ### User Roles
 - **Admin**: Full system access and user management
 - **Registrar**: Student registration approval and course management
-- **Teacher**: Grade management and classroom administration
+- **Lecturer**: Grade management and classroom administration
+- **Accountant**: Financial management, invoicing, and payment tracking
 - **Student**: View grades, register for courses, and manage profile
 
 ### Core Functionality
@@ -40,6 +41,10 @@ New to this project? Check out the [Quick Start Guide](QUICKSTART.md) to get up 
 - **Academic Structure**: Schools, departments, and programs hierarchy
 - **Classroom Management**: Create and manage classrooms with student enrollment
 - **Course Registration**: Students can register for courses with registrar approval
+- **Financial Management**: Invoice generation, payment tracking, and financial clearance
+- **Scholarship Management**: Award and track scholarships and financial aid
+- **Payment Processing**: Multiple payment methods with receipt generation
+- **Financial Reports**: Revenue tracking and outstanding balance monitoring
 
 ## Requirements
 
@@ -64,7 +69,7 @@ cp .env.example .env
 Edit `.env` file with your database credentials:
 ```env
 DB_HOST=localhost
-DB_NAME=student_grade_management
+DB_NAME=student_record_management
 DB_USER=root
 DB_PASSWORD=your_password
 ```
@@ -76,7 +81,7 @@ mysql -u root -p < database/seed.sql
 ```
 
 Or import via phpMyAdmin:
-1. Create a database named `student_grade_management`
+1. Create a database named `student_record_management`
 2. Import `database/schema.sql`
 3. Import `database/seed.sql` (optional - includes sample data)
 
@@ -95,15 +100,31 @@ http://localhost/student-grade-management/
 
 ## Default Credentials
 
-### Admin Account
-- Username: `admin`
-- Password: `password123`
+The system comes with comprehensive demo data including multiple users, schools, departments, programs, and sample courses.
 
-### Registrar Account
-- Username: `registrar`
-- Password: `password123`
+### Quick Access Accounts
 
-**Important**: Change these passwords after first login!
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | `admin` | `password123` |
+| Registrar | `registrar` | `password123` |
+| Lecturer | `lecturer1` | `password123` |
+| Accountant | `accountant` | `password123` |
+| Student | `student1` | `password123` |
+
+**📋 For complete list of all demo accounts, see [DEMO_CREDENTIALS.md](DEMO_CREDENTIALS.md)**
+
+This includes:
+- 2 Admin accounts
+- 2 Registrar accounts
+- 5 Lecturer accounts
+- 2 Accountant accounts
+- 15 Student accounts (with realistic data)
+- 3 Pending registration requests
+- 6 Schools, 16 Departments, 26 Programs
+- Sample courses, grades, and schedules
+
+**⚠️ Important**: All users currently have password `password123`. Change passwords after first login for security!
 
 ## Project Structure
 
@@ -128,7 +149,7 @@ student-grade-management/
 ├── teacher.php            # Teacher dashboard
 ├── students.php           # Student dashboard
 ├── registrar.php          # Registrar dashboard
-├── register_v2.php        # Student registration form
+├── register.php           # Student registration form
 ├── index.php              # Login page
 ├── .env                   # Environment variables (not in git)
 ├── .env.example           # Environment template

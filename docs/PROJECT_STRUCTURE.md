@@ -1,6 +1,6 @@
 # Project Structure
 
-This document describes the organization of the Student Grade Management System.
+This document describes the organization of the Student Record Management System.
 
 ## Directory Structure
 

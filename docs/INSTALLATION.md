@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide will help you set up the Student Grade Management System on your local or production server.
+This guide will help you set up the Student Record Management System on your local or production server.
 
 ## Prerequisites
 
@@ -20,9 +20,9 @@ cp .env.example .env
 
 ### 2. Create Database
 ```bash
-mysql -u root -p -e "CREATE DATABASE student_grade_management"
-mysql -u root -p student_grade_management < database/schema.sql
-mysql -u root -p student_grade_management < database/seed.sql
+mysql -u root -p -e "CREATE DATABASE student_record_management"
+mysql -u root -p student_record_management < database/schema.sql
+mysql -u root -p student_record_management < database/seed.sql
 ```
 
 ### 3. Set Permissions

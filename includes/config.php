@@ -16,7 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../config/database.php';
 
 // Application constants
-define('APP_NAME', getenv('APP_NAME') ?: 'Student Grade Management System');
+define('APP_NAME', getenv('APP_NAME') ?: 'Student Record Management System');
 define('APP_URL', getenv('APP_URL') ?: 'http://localhost');
 define('UPLOAD_MAX_SIZE', getenv('UPLOAD_MAX_SIZE') ?: 5242880); // 5MB default
 define('ALLOWED_EXTENSIONS', explode(',', getenv('ALLOWED_EXTENSIONS') ?: 'jpg,jpeg,png,pdf'));

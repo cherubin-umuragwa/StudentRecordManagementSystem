@@ -23,9 +23,10 @@ function getDashboardUrl() {
     
     switch ($_SESSION['role']) {
         case 'admin': return 'admin.php';
-        case 'teacher': return 'teacher.php';
+        case 'lecturer': return 'lecturer.php';
         case 'student': return 'students.php';
         case 'registrar': return 'registrar.php';
+        case 'accountant': return 'accountant.php';
         default: return 'index.php';
     }
 }

@@ -1,25 +1,25 @@
 <?php
 include 'includes/conn.php';
 include 'includes/functions.php';
-requireRole('teacher');
+requireRole('lecturer');
 
-$teacher_id = $_SESSION['user_id'];
+$lecturer_id = $_SESSION['user_id'];
 
-// Get teacher's classrooms
-$classrooms = $pdo->prepare("SELECT * FROM classrooms WHERE teacher_id = ?");
-$classrooms->execute([$teacher_id]);
-$teacher_classrooms = $classrooms->fetchAll();
+// Get lecturer's classrooms
+$classrooms = $pdo->prepare("SELECT * FROM classrooms WHERE lecturer_id = ?");
+$classrooms->execute([$lecturer_id]);
+$lecturer_classrooms = $classrooms->fetchAll();
 
-// Get students in teacher's classrooms
+// Get students in lecturer's classrooms
 $students_stmt = $pdo->prepare("
     SELECT u.id, u.first_name, u.last_name, u.username, c.name as classroom_name 
     FROM users u 
     JOIN classroom_students cs ON u.id = cs.student_id 
     JOIN classrooms c ON cs.classroom_id = c.id 
-    WHERE c.teacher_id = ? 
+    WHERE c.lecturer_id = ? 
     ORDER BY c.name, u.first_name
 ");
-$students_stmt->execute([$teacher_id]);
+$students_stmt->execute([$lecturer_id]);
 $students = $students_stmt->fetchAll();
 ?>
 
@@ -28,20 +28,42 @@ $students = $students_stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard - Student Grade Management</title>
+    <title>Lecturer Dashboard - Student Record Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="assets/style.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 0;
+        }
+        .sidebar .nav-link {
+            color: white;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid transparent;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: white;
+        }
+        .grade-card {
+            transition: transform 0.2s;
+        }
+        .grade-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar teacher-sidebar">
+            <div class="col-md-3 col-lg-2 sidebar">
                 <div class="d-flex flex-column p-3">
                     <div class="text-center mb-4">
                         <i class="fas fa-chalkboard-teacher fa-2x mb-2"></i>
-                        <h5>Teacher Portal</h5>
+                        <h5>Lecturer Portal</h5>
                         <small><?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; ?></small>
                     </div>
                     
@@ -81,7 +103,7 @@ $students = $students_stmt->fetchAll();
                     <!-- Dashboard Tab -->
                     <div class="tab-pane fade show active" id="dashboard">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2>Teacher Dashboard</h2>
+                            <h2>Lecturer Dashboard</h2>
                             <span>Welcome, <?php echo $_SESSION['first_name']; ?>!</span>
                         </div>
 
@@ -92,7 +114,7 @@ $students = $students_stmt->fetchAll();
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between">
                                             <div>
-                                                <h4><?php echo count($teacher_classrooms); ?></h4>
+                                                <h4><?php echo count($lecturer_classrooms); ?></h4>
                                                 <p>My Classrooms</p>
                                             </div>
                                             <i class="fas fa-chalkboard fa-2x"></i>
@@ -137,7 +159,7 @@ $students = $students_stmt->fetchAll();
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <?php foreach($teacher_classrooms as $classroom): ?>
+                                            <?php foreach($lecturer_classrooms as $classroom): ?>
                                             <div class="col-md-4 mb-3">
                                                 <div class="card grade-card border-primary">
                                                     <div class="card-body">
@@ -200,6 +222,17 @@ $students = $students_stmt->fetchAll();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var triggerTabList = [].slice.call(document.querySelectorAll('a[data-bs-toggle="tab"]'))
+            triggerTabList.forEach(function (triggerEl) {
+                var tabTrigger = new bootstrap.Tab(triggerEl)
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault()
+                    tabTrigger.show()
+                })
+            })
+        });
+    </script>
 </body>
 </html>

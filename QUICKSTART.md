@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get up and running with the Student Grade Management System in 5 minutes!
+Get up and running with the Student Record Management System in 5 minutes!
 
 ## Prerequisites
 
@@ -20,16 +20,16 @@ cp .env.example .env
 Edit `.env` with your database credentials:
 ```env
 DB_HOST=localhost
-DB_NAME=student_grade_management
+DB_NAME=student_record_management
 DB_USER=root
 DB_PASSWORD=your_password
 ```
 
 ### 2. Create Database
 ```bash
-mysql -u root -p -e "CREATE DATABASE student_grade_management"
-mysql -u root -p student_grade_management < database/schema.sql
-mysql -u root -p student_grade_management < database/seed.sql
+mysql -u root -p -e "CREATE DATABASE student_record_management"
+mysql -u root -p student_record_management < database/schema.sql
+mysql -u root -p student_record_management < database/seed.sql
 ```
 
 ### 3. Set Permissions
@@ -42,10 +42,16 @@ chmod 644 .env
 Open: `http://localhost/student-grade-management/`
 
 ### 5. Login
-**Admin:** `admin` / `password123`  
-**Registrar:** `registrar` / `password123`
+**Quick Access:**
+- Admin: `admin` / `password123`
+- Registrar: `registrar` / `password123`
+- Lecturer: `lecturer1` / `password123`
+- Accountant: `accountant` / `password123`
+- Student: `student1` / `password123`
 
-⚠️ **Change these passwords immediately!**
+📋 **See [DEMO_CREDENTIALS.md](DEMO_CREDENTIALS.md) for all 22 demo accounts!**
+
+⚠️ **All users have password: `password123` - Change after first login!**
 
 ## What's Next?
 

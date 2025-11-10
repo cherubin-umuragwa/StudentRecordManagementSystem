@@ -30,7 +30,7 @@ echo "<!DOCTYPE html>
     <div class='card'>
         <div class='card-header step-header'>
             <h3><i class='fas fa-rocket me-2'></i>Complete System Installation</h3>
-            <p class='mb-0'>Installing all components of the Student Grade Management System</p>
+            <p class='mb-0'>Installing all components of the Student Record Management System</p>
         </div>
         <div class='card-body'>";
 
@@ -81,7 +81,7 @@ try {
           `city` varchar(100) DEFAULT NULL,
           `region` varchar(100) DEFAULT NULL,
           `postal_code` varchar(20) DEFAULT NULL,
-          `country` varchar(100) DEFAULT 'Tanzania',
+          `country` varchar(100) DEFAULT 'Uganda',
           `guardian_name` varchar(100) NOT NULL,
           `guardian_phone` varchar(20) NOT NULL,
           `emergency_contact_name` varchar(100) DEFAULT NULL,

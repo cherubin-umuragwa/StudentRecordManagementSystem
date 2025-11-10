@@ -1,4 +1,4 @@
-# Contributing to Student Grade Management System
+# Contributing to Student Record Management System
 
 Thank you for considering contributing to this project! Here are some guidelines to help you get started.
 

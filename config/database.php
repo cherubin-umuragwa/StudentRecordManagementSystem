@@ -41,7 +41,7 @@ loadEnv($envPath);
 
 // Get database configuration from environment
 $host = getenv('DB_HOST') ?: 'localhost';
-$dbname = getenv('DB_NAME') ?: 'student_grade_management';
+$dbname = getenv('DB_NAME') ?: 'student_record_management';
 $username = getenv('DB_USER') ?: 'root';
 $password = getenv('DB_PASSWORD') ?: '';
 

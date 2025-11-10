@@ -1,5 +1,5 @@
 -- ============================================
--- Student Grade Management System
+-- Student Record Management System
 -- Complete Database Schema
 -- ============================================
 
@@ -15,10 +15,10 @@ SET time_zone = "+00:00";
 -- ============================================
 -- Create Database
 -- ============================================
-CREATE DATABASE IF NOT EXISTS `student_grade_management` 
+CREATE DATABASE IF NOT EXISTS `student_record_management` 
 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE `student_grade_management`;
+USE `student_record_management`;
 
 -- ============================================
 -- Table: schools
@@ -79,7 +79,7 @@ CREATE TABLE `users` (
   `email` varchar(100) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `alternative_phone` varchar(20) DEFAULT NULL,
-  `role` enum('admin','teacher','student','registrar') NOT NULL,
+  `role` enum('admin','lecturer','student','registrar','accountant') NOT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `middle_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE `users` (
   `city` varchar(100) DEFAULT NULL,
   `region` varchar(100) DEFAULT NULL,
   `postal_code` varchar(20) DEFAULT NULL,
-  `country` varchar(100) DEFAULT 'Tanzania',
+  `country` varchar(100) DEFAULT 'Uganda',
   `profile_photo` varchar(255) DEFAULT NULL,
   `program_id` int(11) DEFAULT NULL,
   `current_year` int(1) DEFAULT 1,
@@ -129,7 +129,7 @@ CREATE TABLE `registration_requests` (
   `city` varchar(100) DEFAULT NULL,
   `region` varchar(100) DEFAULT NULL,
   `postal_code` varchar(20) DEFAULT NULL,
-  `country` varchar(100) DEFAULT 'Tanzania',
+  `country` varchar(100) DEFAULT 'Uganda',
   `guardian_name` varchar(100) NOT NULL,
   `guardian_phone` varchar(20) NOT NULL,
   `emergency_contact_name` varchar(100) DEFAULT NULL,
@@ -188,11 +188,11 @@ CREATE TABLE `classrooms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
-  `teacher_id` int(11) DEFAULT NULL,
+  `lecturer_id` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
-  KEY `teacher_id` (`teacher_id`),
-  CONSTRAINT `classrooms_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `lecturer_id` (`lecturer_id`),
+  CONSTRAINT `classrooms_ibfk_1` FOREIGN KEY (`lecturer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ============================================
@@ -287,7 +287,7 @@ CREATE TABLE `grades` (
   `student_id` int(11) DEFAULT NULL,
   `subject_id` int(11) DEFAULT NULL,
   `classroom_id` int(11) DEFAULT NULL,
-  `teacher_id` int(11) DEFAULT NULL,
+  `lecturer_id` int(11) DEFAULT NULL,
   `grade` decimal(5,2) NOT NULL,
   `grade_type` enum('quiz','assignment','exam','project') NOT NULL,
   `remarks` text DEFAULT NULL,
@@ -296,11 +296,146 @@ CREATE TABLE `grades` (
   KEY `student_id` (`student_id`),
   KEY `subject_id` (`subject_id`),
   KEY `classroom_id` (`classroom_id`),
-  KEY `teacher_id` (`teacher_id`),
+  KEY `lecturer_id` (`lecturer_id`),
   CONSTRAINT `grades_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `grades_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE CASCADE,
   CONSTRAINT `grades_ibfk_3` FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `grades_ibfk_4` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  CONSTRAINT `grades_ibfk_4` FOREIGN KEY (`lecturer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- ============================================
+-- Table: invoices
+-- ============================================
+CREATE TABLE `invoices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `student_id` int(11) NOT NULL,
+  `invoice_number` varchar(50) NOT NULL,
+  `academic_year` varchar(20) NOT NULL,
+  `semester` int(1) NOT NULL,
+  `tuition_fee` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `registration_fee` decimal(10,2) DEFAULT 0.00,
+  `library_fee` decimal(10,2) DEFAULT 0.00,
+  `lab_fee` decimal(10,2) DEFAULT 0.00,
+  `other_fees` decimal(10,2) DEFAULT 0.00,
+  `total_amount` decimal(10,2) NOT NULL,
+  `amount_paid` decimal(10,2) DEFAULT 0.00,
+  `balance` decimal(10,2) NOT NULL,
+  `status` enum('pending','partial','paid','overdue') DEFAULT 'pending',
+  `due_date` date NOT NULL,
+  `generated_by` int(11) DEFAULT NULL,
+  `generated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `notes` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `invoice_number` (`invoice_number`),
+  KEY `student_id` (`student_id`),
+  KEY `generated_by` (`generated_by`),
+  KEY `status` (`status`),
+  KEY `academic_year_semester` (`academic_year`, `semester`),
+  CONSTRAINT `invoices_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `invoices_ibfk_2` FOREIGN KEY (`generated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ============================================
+-- Table: payments
+-- ============================================
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoice_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `payment_reference` varchar(100) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `payment_method` enum('cash','bank_transfer','mobile_money','cheque','card') NOT NULL,
+  `payment_date` date NOT NULL,
+  `transaction_id` varchar(100) DEFAULT NULL,
+  `received_by` int(11) DEFAULT NULL,
+  `receipt_number` varchar(50) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `payment_reference` (`payment_reference`),
+  KEY `invoice_id` (`invoice_id`),
+  KEY `student_id` (`student_id`),
+  KEY `received_by` (`received_by`),
+  KEY `payment_date` (`payment_date`),
+  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `payments_ibfk_3` FOREIGN KEY (`received_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ============================================
+-- Table: scholarships
+-- ============================================
+CREATE TABLE `scholarships` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `description` text DEFAULT NULL,
+  `scholarship_type` enum('full','partial','merit','need_based','sports','other') NOT NULL,
+  `amount` decimal(10,2) DEFAULT NULL COMMENT 'Fixed amount or NULL for percentage',
+  `percentage` decimal(5,2) DEFAULT NULL COMMENT 'Percentage discount or NULL for fixed amount',
+  `duration_semesters` int(2) DEFAULT NULL COMMENT 'Number of semesters, NULL for unlimited',
+  `eligibility_criteria` text DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ============================================
+-- Table: student_scholarships
+-- ============================================
+CREATE TABLE `student_scholarships` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `student_id` int(11) NOT NULL,
+  `scholarship_id` int(11) NOT NULL,
+  `academic_year` varchar(20) NOT NULL,
+  `start_semester` int(1) NOT NULL,
+  `end_semester` int(1) DEFAULT NULL,
+  `status` enum('active','expired','revoked','completed') DEFAULT 'active',
+  `awarded_by` int(11) DEFAULT NULL,
+  `awarded_date` date NOT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `student_id` (`student_id`),
+  KEY `scholarship_id` (`scholarship_id`),
+  KEY `awarded_by` (`awarded_by`),
+  KEY `status` (`status`),
+  CONSTRAINT `student_scholarships_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `student_scholarships_ibfk_2` FOREIGN KEY (`scholarship_id`) REFERENCES `scholarships` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `student_scholarships_ibfk_3` FOREIGN KEY (`awarded_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ============================================
+-- Table: financial_clearance
+-- ============================================
+CREATE TABLE `financial_clearance` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `student_id` int(11) NOT NULL,
+  `academic_year` varchar(20) NOT NULL,
+  `semester` int(1) NOT NULL,
+  `total_fees` decimal(10,2) NOT NULL,
+  `total_paid` decimal(10,2) NOT NULL,
+  `balance` decimal(10,2) NOT NULL,
+  `clearance_status` enum('cleared','not_cleared','pending') DEFAULT 'pending',
+  `cleared_by` int(11) DEFAULT NULL,
+  `cleared_date` date DEFAULT NULL,
+  `can_register_courses` tinyint(1) DEFAULT 0,
+  `can_take_exams` tinyint(1) DEFAULT 0,
+  `can_graduate` tinyint(1) DEFAULT 0,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `student_year_semester` (`student_id`, `academic_year`, `semester`),
+  KEY `cleared_by` (`cleared_by`),
+  KEY `clearance_status` (`clearance_status`),
+  CONSTRAINT `financial_clearance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `financial_clearance_ibfk_2` FOREIGN KEY (`cleared_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 COMMIT;
