@@ -90,42 +90,13 @@ $total_rejected = $pdo->query("SELECT COUNT(*) FROM course_registrations WHERE s
     <title>Course Registration Approval - Registrar Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            background: linear-gradient(135deg, #e83e8c 0%, #dc3545 100%);
-            color: white;
-            min-height: 100vh;
-            padding: 0;
-        }
-        .sidebar .nav-link {
-            color: white;
-            padding: 1rem 1.5rem;
-            border-left: 4px solid transparent;
-        }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background: rgba(255,255,255,0.1);
-            border-left-color: white;
-        }
-        .stat-card {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .registration-card {
-            border-left: 4px solid #667eea;
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
+            <div class="col-md-3 col-lg-2 sidebar registrar-sidebar">
                 <div class="d-flex flex-column p-3">
                     <div class="text-center mb-4">
                         <i class="fas fa-user-check fa-2x mb-2"></i>
@@ -402,5 +373,6 @@ $total_rejected = $pdo->query("SELECT COUNT(*) FROM course_registrations WHERE s
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/script.js"></script>
 </body>
 </html>

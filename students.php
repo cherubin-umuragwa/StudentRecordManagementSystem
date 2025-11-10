@@ -96,38 +96,13 @@ foreach ($enrolled_courses as $course) {
     <title>Student Portal - Student Grade Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            color: white;
-            min-height: 100vh;
-            padding: 0;
-        }
-        .sidebar .nav-link {
-            color: white;
-            padding: 1rem 1.5rem;
-            border-left: 4px solid transparent;
-        }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background: rgba(255,255,255,0.1);
-            border-left-color: white;
-        }
-        .grade-progress {
-            height: 10px;
-        }
-        .stat-card {
-            transition: transform 0.2s;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-    </style>
+    <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
+            <div class="col-md-3 col-lg-2 sidebar student-sidebar">
                 <div class="d-flex flex-column p-3">
                     <div class="text-center mb-4">
                         <i class="fas fa-user-graduate fa-2x mb-2"></i>
@@ -522,43 +497,6 @@ foreach ($enrolled_courses as $course) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var triggerTabList = [].slice.call(document.querySelectorAll('a[data-bs-toggle="tab"]'))
-            triggerTabList.forEach(function (triggerEl) {
-                var tabTrigger = new bootstrap.Tab(triggerEl)
-                triggerEl.addEventListener('click', function (event) {
-                    event.preventDefault()
-                    tabTrigger.show()
-                })
-            });
-
-            // Simple grade chart
-            var ctx = document.getElementById('gradeChart').getContext('2d');
-            var gradeChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Quiz 1', 'Assignment 1', 'Exam 1', 'Quiz 2', 'Project'],
-                    datasets: [{
-                        label: 'Grades',
-                        data: [85, 92, 78, 88, 95],
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            min: 50,
-                            max: 100
-                        }
-                    }
-                }
-            });
-        });
-    </script>
+    <script src="assets/script.js"></script>
 </body>
 </html>

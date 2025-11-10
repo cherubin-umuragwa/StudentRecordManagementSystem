@@ -148,42 +148,13 @@ foreach ($enrolled as $course) {
     <title>My Courses - Student Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            color: white;
-            min-height: 100vh;
-            padding: 0;
-        }
-        .sidebar .nav-link {
-            color: white;
-            padding: 1rem 1.5rem;
-            border-left: 4px solid transparent;
-        }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background: rgba(255,255,255,0.1);
-            border-left-color: white;
-        }
-        .course-card {
-            border-left: 4px solid #007bff;
-            transition: transform 0.2s;
-        }
-        .course-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .stat-card {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-    </style>
+    <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
+            <div class="col-md-3 col-lg-2 sidebar student-sidebar">
                 <div class="d-flex flex-column p-3">
                     <div class="text-center mb-4">
                         <i class="fas fa-user-graduate fa-2x mb-2"></i>
@@ -467,5 +438,6 @@ foreach ($enrolled as $course) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/script.js"></script>
 </body>
 </html>

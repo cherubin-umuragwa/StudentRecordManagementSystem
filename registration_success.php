@@ -10,37 +10,9 @@ $username = isset($_GET['username']) ? $_GET['username'] : '';
     <title>Registration Successful</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .success-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            padding: 3rem;
-            max-width: 600px;
-            text-align: center;
-        }
-        .success-icon {
-            font-size: 5rem;
-            color: #28a745;
-            margin-bottom: 1rem;
-        }
-        .student-details {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin: 2rem 0;
-            text-align: left;
-        }
-    </style>
+    <link href="assets/style.css" rel="stylesheet">
 </head>
-<body>
+<body class="success-page">
     <div class="success-card">
         <i class="fas fa-check-circle success-icon"></i>
         <h2 class="mb-3">Registration Successful!</h2>
@@ -80,5 +52,7 @@ $username = isset($_GET['username']) ? $_GET['username'] : '';
             </small>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/script.js"></script>
 </body>
 </html>

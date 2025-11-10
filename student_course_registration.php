@@ -143,29 +143,7 @@ foreach ($my_registrations as $reg) {
     <title>Course Registration - Student Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .course-card {
-            border-left: 4px solid #667eea;
-            transition: transform 0.2s;
-        }
-        .course-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .course-card.elective {
-            border-left-color: #28a745;
-        }
-        .status-badge {
-            font-size: 0.85em;
-        }
-        .stat-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -405,14 +383,6 @@ foreach ($my_registrations as $reg) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Count selected courses and calculate credits
-        document.querySelectorAll('input[name="courses[]"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const selected = document.querySelectorAll('input[name="courses[]"]:checked').length;
-                console.log('Selected courses:', selected);
-            });
-        });
-    </script>
+    <script src="assets/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,280 @@
+/* ============================================
+   STUDENT MANAGEMENT SYSTEM - GENERAL STYLES
+   ============================================ */
+
+/* Login Page Styles */
+.login-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo i {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    min-height: 100vh;
+    padding: 0;
+}
+
+.sidebar .nav-link {
+    color: white;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid transparent;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background: rgba(255,255,255,0.1);
+    border-left-color: white;
+}
+
+/* Admin Sidebar */
+.sidebar.admin-sidebar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Student Sidebar */
+.sidebar.student-sidebar {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+/* Teacher Sidebar */
+.sidebar.teacher-sidebar {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+/* Registrar Sidebar */
+.sidebar.registrar-sidebar {
+    background: linear-gradient(135deg, #e83e8c 0%, #dc3545 100%);
+}
+
+/* Stat Cards */
+.stat-card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Modal Header */
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* Password Toggle */
+.password-toggle {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.password-toggle:hover {
+    color: #667eea !important;
+}
+
+/* Grade Progress */
+.grade-progress {
+    height: 10px;
+}
+
+/* Grade Card */
+.grade-card {
+    transition: transform 0.2s;
+}
+
+.grade-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Grade Badge */
+.grade-badge {
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+/* Registration Page Styles */
+body.registration-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.registration-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.registration-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.form-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.required::after {
+    content: " *";
+    color: red;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    height: 5px;
+    border-radius: 3px;
+    margin-top: 5px;
+}
+
+.strength-weak {
+    background: #dc3545;
+    width: 33%;
+}
+
+.strength-medium {
+    background: #ffc107;
+    width: 66%;
+}
+
+.strength-strong {
+    background: #28a745;
+    width: 100%;
+}
+
+/* Step Indicator */
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+    background: #e9ecef;
+    position: relative;
+}
+
+.step.active {
+    background: #667eea;
+    color: white;
+}
+
+.step.completed {
+    background: #28a745;
+    color: white;
+}
+
+/* Request Card */
+.request-card {
+    border-left: 4px solid #667eea;
+    margin-bottom: 1rem;
+}
+
+/* Course Card */
+.course-card {
+    border-left: 4px solid #007bff;
+    transition: transform 0.2s;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.course-card.elective {
+    border-left-color: #28a745;
+}
+
+/* Status Badge */
+.status-badge {
+    font-size: 0.85em;
+}
+
+/* Registration Card */
+.registration-card {
+    border-left: 4px solid #667eea;
+    margin-bottom: 1rem;
+}
+
+/* Stat Box */
+.stat-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+/* Success Page Styles */
+body.success-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 3rem;
+    max-width: 600px;
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 5rem;
+    color: #28a745;
+    margin-bottom: 1rem;
+}
+
+.student-details {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+    text-align: left;
+}
+

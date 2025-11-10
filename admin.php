@@ -179,49 +179,13 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
     <title>Admin Dashboard - Student Grade Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-            padding: 0;
-        }
-        .sidebar .nav-link {
-            color: white;
-            padding: 1rem 1.5rem;
-            border-left: 4px solid transparent;
-        }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background: rgba(255,255,255,0.1);
-            border-left-color: white;
-        }
-        .stat-card {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .password-toggle {
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .password-toggle:hover {
-            color: #667eea !important;
-        }
-    </style>
+    <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
+            <div class="col-md-3 col-lg-2 sidebar admin-sidebar">
                 <div class="d-flex flex-column p-3">
                     <div class="text-center mb-4">
                         <i class="fas fa-graduation-cap fa-2x mb-2"></i>
@@ -762,94 +726,6 @@ $classrooms = $pdo->query("SELECT c.*, u.first_name, u.last_name
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Activate tab from URL hash
-        document.addEventListener('DOMContentLoaded', function() {
-            var triggerTabList = [].slice.call(document.querySelectorAll('a[data-bs-toggle="tab"]'))
-            triggerTabList.forEach(function (triggerEl) {
-                var tabTrigger = new bootstrap.Tab(triggerEl)
-                triggerEl.addEventListener('click', function (event) {
-                    event.preventDefault()
-                    tabTrigger.show()
-                })
-            });
-
-            // Edit User Modal
-            var editUserModal = document.getElementById('editUserModal')
-            editUserModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget
-                var userId = button.getAttribute('data-id')
-                var username = button.getAttribute('data-username')
-                var firstName = button.getAttribute('data-firstname')
-                var lastName = button.getAttribute('data-lastname')
-                var email = button.getAttribute('data-email')
-                var role = button.getAttribute('data-role')
-                
-                var modal = this
-                modal.querySelector('#edit_user_id').value = userId
-                modal.querySelector('#edit_username').value = username
-                modal.querySelector('#edit_first_name').value = firstName
-                modal.querySelector('#edit_last_name').value = lastName
-                modal.querySelector('#edit_email').value = email
-                modal.querySelector('#edit_role').value = role
-            })
-
-            // Change Password Modal
-            var changePasswordModal = document.getElementById('changePasswordModal')
-            changePasswordModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget
-                var userId = button.getAttribute('data-id')
-                var username = button.getAttribute('data-username')
-                
-                var modal = this
-                modal.querySelector('#password_user_id').value = userId
-                modal.querySelector('#password_username').value = username
-            })
-
-            // Edit Subject Modal
-            var editSubjectModal = document.getElementById('editSubjectModal')
-            editSubjectModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget
-                var subjectId = button.getAttribute('data-id')
-                var name = button.getAttribute('data-name')
-                var code = button.getAttribute('data-code')
-                var description = button.getAttribute('data-description')
-                
-                var modal = this
-                modal.querySelector('#edit_subject_id').value = subjectId
-                modal.querySelector('#edit_subject_name').value = name
-                modal.querySelector('#edit_subject_code').value = code
-                modal.querySelector('#edit_subject_description').value = description
-            })
-        });
-
-        // Password toggle functionality
-        function togglePassword(passwordFieldId, iconId) {
-            var passwordField = document.getElementById(passwordFieldId);
-            var icon = document.getElementById(iconId);
-            
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                passwordField.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        }
-
-        // Password strength indicator (optional enhancement)
-        function checkPasswordStrength(password) {
-            var strength = 0;
-            if (password.length >= 6) strength++;
-            if (password.match(/[a-z]+/)) strength++;
-            if (password.match(/[A-Z]+/)) strength++;
-            if (password.match(/[0-9]+/)) strength++;
-            if (password.match(/[$@#&!]+/)) strength++;
-            
-            return strength;
-        }
-    </script>
+    <script src="assets/script.js"></script>
 </body>
 </html>
