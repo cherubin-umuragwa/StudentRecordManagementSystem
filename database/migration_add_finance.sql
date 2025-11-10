@@ -3,7 +3,7 @@
 -- Run this on existing database to add finance features
 -- ============================================
 
-USE `student_grade_management`;
+USE `student_record_management_system`;
 
 -- 1. Update users table to add accountant role
 ALTER TABLE `users` 
@@ -144,3 +144,29 @@ INSERT INTO `scholarships` (`name`, `description`, `scholarship_type`, `amount`,
 
 -- Migration complete!
 SELECT 'Financial management system tables created successfully!' as Status;
+
+
+-- Student Payments Table
+CREATE TABLE IF NOT EXISTS `student_payments` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `student_id` INT NOT NULL,
+  `academic_year` INT NOT NULL,
+  `semester` INT NOT NULL,
+  `payment_date` DATE NOT NULL,
+  `amount` DECIMAL(10,2) NOT NULL,
+  `payment_method` VARCHAR(50) NOT NULL,
+  `transaction_reference` VARCHAR(100) NOT NULL,
+  `payment_proof` VARCHAR(255) DEFAULT NULL,
+  `notes` TEXT DEFAULT NULL,
+  `status` ENUM('pending','verified','rejected') DEFAULT 'pending',
+  `verified_by` INT DEFAULT NULL,
+  `verified_at` DATETIME DEFAULT NULL,
+  `rejection_reason` TEXT DEFAULT NULL,
+  `submitted_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`student_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`verified_by`) REFERENCES `users`(`id`) ON DELETE SET NULL,
+  INDEX `idx_student_payment` (`student_id`, `academic_year`, `semester`),
+  INDEX `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SELECT 'Student payments table created successfully!' as Status;

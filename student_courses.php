@@ -153,39 +153,7 @@ foreach ($enrolled as $course) {
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar student-sidebar">
-                <div class="d-flex flex-column p-3">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-user-graduate fa-2x mb-2"></i>
-                        <h5>Student Portal</h5>
-                        <small><?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; ?></small>
-                    </div>
-                    
-                    <ul class="nav nav-pills flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="students.php">
-                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="student_courses.php">
-                                <i class="fas fa-book me-2"></i>My Courses
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="student_course_registration.php">
-                                <i class="fas fa-plus-circle me-2"></i>Register Courses
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="logout.php">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <?php include 'includes/student_navbar.php'; ?>
 
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 ms-sm-auto px-4 py-4">

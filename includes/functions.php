@@ -31,19 +31,26 @@ function getDashboardUrl() {
     }
 }
 
-function calculateGradePoint($grade) {
-    if ($grade >= 90) return 'A';
-    if ($grade >= 80) return 'B';
-    if ($grade >= 70) return 'C';
-    if ($grade >= 60) return 'D';
+function calculateGradePoint($percentage) {
+    if ($percentage >= 80) return 'A';
+    if ($percentage >= 75) return 'B+';
+    if ($percentage >= 70) return 'B';
+    if ($percentage >= 65) return 'C+';
+    if ($percentage >= 60) return 'C';
+    if ($percentage >= 55) return 'D+';
+    if ($percentage >= 50) return 'D';
     return 'F';
 }
 
-function getGradeColor($grade) {
-    if ($grade >= 90) return 'success';
-    if ($grade >= 80) return 'info';
-    if ($grade >= 70) return 'warning';
-    return 'danger';
+function getGradeColor($percentage) {
+    if ($percentage >= 80) return 'success';      // A
+    if ($percentage >= 75) return 'success';      // B+
+    if ($percentage >= 70) return 'info';         // B
+    if ($percentage >= 65) return 'info';         // C+
+    if ($percentage >= 60) return 'warning';      // C
+    if ($percentage >= 55) return 'warning';      // D+
+    if ($percentage >= 50) return 'warning';      // D
+    return 'danger';                               // F
 }
 
 function deleteUser($pdo, $user_id) {

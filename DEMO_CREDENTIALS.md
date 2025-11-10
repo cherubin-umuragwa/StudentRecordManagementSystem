@@ -282,8 +282,8 @@ Year 1 & 2 Computer Science courses including:
 
 ### Financial Statistics
 - **Total Invoices:** 7
-- **Total Revenue:** TZS 10,650,000
-- **Outstanding Balance:** TZS 4,550,000
+- **Total Revenue:** UGX 10,650,000
+- **Outstanding Balance:** UGX 4,550,000
 - **Active Scholarships:** 3
 - **Pending Clearances:** 2
 

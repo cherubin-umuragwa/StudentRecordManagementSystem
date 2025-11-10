@@ -16,19 +16,40 @@ $student_info = $pdo->prepare("SELECT u.*, p.name as program_name, p.code as pro
 $student_info->execute([$student_id]);
 $student = $student_info->fetch();
 
-// Get student's grades
-$grades_stmt = $pdo->prepare("
-    SELECT g.*, s.name as subject_name, c.name as classroom_name, 
-           u.first_name as lecturer_first, u.last_name as lecturer_last 
-    FROM grades g 
-    JOIN subjects s ON g.subject_id = s.id 
-    JOIN classrooms c ON g.classroom_id = c.id 
-    JOIN users u ON g.lecturer_id = u.id 
-    WHERE g.student_id = ? 
-    ORDER BY g.graded_at DESC
-");
-$grades_stmt->execute([$student_id]);
-$grades = $grades_stmt->fetchAll();
+// Get student's grades from course registrations
+try {
+    $grades_stmt = $pdo->prepare("
+        SELECT cr.course_id, c.code as course_code, c.name as course_name, c.credits,
+               cr.grade as percentage, cr.letter_grade, cr.academic_year, cr.semester
+        FROM course_registrations cr
+        JOIN courses c ON cr.course_id = c.id
+        WHERE cr.student_id = ? AND cr.grade IS NOT NULL
+        ORDER BY cr.academic_year DESC, cr.semester DESC
+    ");
+    $grades_stmt->execute([$student_id]);
+    $grades = $grades_stmt->fetchAll();
+    
+    // Calculate letter grades if not set
+    foreach ($grades as &$grade) {
+        if (empty($grade['letter_grade']) && !is_null($grade['percentage'])) {
+            $grade['letter_grade'] = calculateGradePoint($grade['percentage']);
+        }
+    }
+} catch (PDOException $e) {
+    // Fallback to old grades system if course_registrations doesn't have grade columns
+    $grades_stmt = $pdo->prepare("
+        SELECT g.*, s.name as subject_name, c.name as classroom_name, 
+               u.first_name as lecturer_first, u.last_name as lecturer_last 
+        FROM grades g 
+        JOIN subjects s ON g.subject_id = s.id 
+        JOIN classrooms c ON g.classroom_id = c.id 
+        JOIN users u ON g.lecturer_id = u.id 
+        WHERE g.student_id = ? 
+        ORDER BY g.graded_at DESC
+    ");
+    $grades_stmt->execute([$student_id]);
+    $grades = $grades_stmt->fetchAll();
+}
 
 // Calculate statistics
 $total_grades = count($grades);
@@ -42,7 +63,7 @@ if ($total_grades > 0) {
 }
 
 // Get grade distribution
-$grade_distribution = ['A' => 0, 'B' => 0, 'C' => 0, 'D' => 0, 'F' => 0];
+$grade_distribution = ['A' => 0, 'B+' => 0, 'B' => 0, 'C+' => 0, 'C' => 0, 'D+' => 0, 'D' => 0, 'F' => 0];
 foreach ($grades as $grade) {
     $letter_grade = calculateGradePoint($grade['grade']);
     $grade_distribution[$letter_grade]++;
@@ -101,44 +122,7 @@ foreach ($enrolled_courses as $course) {
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar student-sidebar">
-                <div class="d-flex flex-column p-3">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-user-graduate fa-2x mb-2"></i>
-                        <h5>Student Portal</h5>
-                        <small><?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; ?></small>
-                    </div>
-                    
-                    <ul class="nav nav-pills flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#dashboard" data-bs-toggle="tab">
-                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="student_courses.php">
-                                <i class="fas fa-book me-2"></i>Courses
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#grades" data-bs-toggle="tab">
-                                <i class="fas fa-chart-bar me-2"></i>My Grades
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#performance" data-bs-toggle="tab">
-                                <i class="fas fa-trending-up me-2"></i>Performance
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="logout.php">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <?php include 'includes/student_navbar.php'; ?>
 
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 ms-sm-auto px-4 py-4">
@@ -318,8 +302,6 @@ foreach ($enrolled_courses as $course) {
                                             </div>
                                             <div class="alert alert-warning">
                                                 <strong>Troubleshooting:</strong><br>
-                                                • Make sure you've run the course registration installation<br>
-                                                • Check if the <code>course_registrations</code> table exists<br>
                                                 • Verify you've registered for courses via the registration page<br>
                                                 • Contact the registrar if you've registered but don't see your courses
                                             </div>
@@ -402,45 +384,104 @@ foreach ($enrolled_courses as $course) {
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
+                                    <table class="table table-striped table-hover">
+                                        <thead class="table-dark">
                                             <tr>
-                                                <th>Subject</th>
-                                                <th>Classroom</th>
+                                                <th>Course ID</th>
+                                                <th>Course Name</th>
+                                                <th>Credits</th>
+                                                <th>Percentage</th>
                                                 <th>Grade</th>
-                                                <th>Letter</th>
-                                                <th>Type</th>
-                                                <th>Teacher</th>
-                                                <th>Remarks</th>
-                                                <th>Date</th>
+                                                <th>Academic Year</th>
+                                                <th>Semester</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach($grades as $grade): 
-                                                $letter_grade = calculateGradePoint($grade['grade']);
-                                                $grade_color = getGradeColor($grade['grade']);
-                                            ?>
+                                            <?php if (empty($grades)): ?>
                                             <tr>
-                                                <td><?php echo $grade['subject_name']; ?></td>
-                                                <td><?php echo $grade['classroom_name']; ?></td>
-                                                <td>
-                                                    <span class="badge bg-<?php echo $grade_color; ?>">
-                                                        <?php echo $grade['grade']; ?>
-                                                    </span>
+                                                <td colspan="7" class="text-center text-muted">
+                                                    <i class="fas fa-info-circle me-2"></i>No grades available yet
                                                 </td>
-                                                <td><strong><?php echo $letter_grade; ?></strong></td>
-                                                <td>
-                                                    <span class="badge bg-secondary">
-                                                        <?php echo ucfirst($grade['grade_type']); ?>
-                                                    </span>
-                                                </td>
-                                                <td><?php echo $grade['lecturer_first'] . ' ' . $grade['lecturer_last']; ?></td>
-                                                <td><?php echo $grade['remarks']; ?></td>
-                                                <td><?php echo date('M j, Y', strtotime($grade['graded_at'])); ?></td>
                                             </tr>
-                                            <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <?php foreach($grades as $grade): 
+                                                    // Handle both new and old grade systems
+                                                    if (isset($grade['course_code'])) {
+                                                        // New system with courses
+                                                        $percentage = $grade['percentage'] ?? 0;
+                                                        $letter_grade = $grade['letter_grade'] ?? calculateGradePoint($percentage);
+                                                        $grade_color = getGradeColor($percentage);
+                                                ?>
+                                                <tr>
+                                                    <td><strong><?php echo htmlspecialchars($grade['course_code']); ?></strong></td>
+                                                    <td><?php echo htmlspecialchars($grade['course_name']); ?></td>
+                                                    <td><?php echo $grade['credits']; ?></td>
+                                                    <td>
+                                                        <span class="badge bg-<?php echo $grade_color; ?>">
+                                                            <?php echo number_format($percentage, 1); ?>%
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <strong class="text-<?php echo $grade_color; ?>">
+                                                            <?php echo $letter_grade; ?>
+                                                        </strong>
+                                                    </td>
+                                                    <td><?php echo htmlspecialchars($grade['academic_year']); ?></td>
+                                                    <td><?php echo $grade['semester']; ?></td>
+                                                </tr>
+                                                <?php 
+                                                    } else {
+                                                        // Old system with subjects
+                                                        $percentage = $grade['grade'];
+                                                        $letter_grade = calculateGradePoint($percentage);
+                                                        $grade_color = getGradeColor($percentage);
+                                                ?>
+                                                <tr>
+                                                    <td>-</td>
+                                                    <td><?php echo htmlspecialchars($grade['subject_name']); ?></td>
+                                                    <td>-</td>
+                                                    <td>
+                                                        <span class="badge bg-<?php echo $grade_color; ?>">
+                                                            <?php echo $percentage; ?>%
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <strong class="text-<?php echo $grade_color; ?>">
+                                                            <?php echo $letter_grade; ?>
+                                                        </strong>
+                                                    </td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <?php 
+                                                    }
+                                                endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
+                                </div>
+                                
+                                <!-- Grading Scale Reference -->
+                                <div class="mt-3">
+                                    <h6>Grading Scale:</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled">
+                                                <li><span class="badge bg-success">A</span> = 80% and above</li>
+                                                <li><span class="badge bg-success">B+</span> = 75% - 79%</li>
+                                                <li><span class="badge bg-info">B</span> = 70% - 74%</li>
+                                                <li><span class="badge bg-info">C+</span> = 65% - 69%</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled">
+                                                <li><span class="badge bg-warning">C</span> = 60% - 64%</li>
+                                                <li><span class="badge bg-warning">D+</span> = 55% - 59%</li>
+                                                <li><span class="badge bg-warning">D</span> = 50% - 54%</li>
+                                                <li><span class="badge bg-danger">F</span> = Below 50%</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

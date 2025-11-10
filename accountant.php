@@ -72,50 +72,12 @@ $clearance_pending = $pdo->query("
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="accountant.php">
-                <i class="fas fa-calculator"></i> Finance Portal
-            </a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">
-                    Welcome, <?php echo $_SESSION['first_name']; ?>
-                </span>
-                <a class="nav-link" href="logout.php">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid mt-4">
+    <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2">
-                <div class="list-group">
-                    <a href="#dashboard" class="list-group-item list-group-item-action active" data-bs-toggle="tab">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                    <a href="#invoices" class="list-group-item list-group-item-action" data-bs-toggle="tab">
-                        <i class="fas fa-file-invoice"></i> Invoices
-                    </a>
-                    <a href="#payments" class="list-group-item list-group-item-action" data-bs-toggle="tab">
-                        <i class="fas fa-money-bill-wave"></i> Payments
-                    </a>
-                    <a href="#scholarships" class="list-group-item list-group-item-action" data-bs-toggle="tab">
-                        <i class="fas fa-graduation-cap"></i> Scholarships
-                    </a>
-                    <a href="#clearance" class="list-group-item list-group-item-action" data-bs-toggle="tab">
-                        <i class="fas fa-check-circle"></i> Clearance
-                    </a>
-                    <a href="#reports" class="list-group-item list-group-item-action" data-bs-toggle="tab">
-                        <i class="fas fa-chart-bar"></i> Reports
-                    </a>
-                </div>
-            </div>
+            <?php include 'includes/accountant_navbar.php'; ?>
 
             <!-- Main Content -->
-            <div class="col-md-10">
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-4 py-4" style="background-color: #f8f9fa;">
                 <div class="tab-content">
                     <!-- Dashboard Tab -->
                     <div class="tab-pane fade show active" id="dashboard">
@@ -127,7 +89,7 @@ $clearance_pending = $pdo->query("
                                 <div class="card stat-card revenue-card">
                                     <div class="card-body">
                                         <h6 class="text-muted">Total Revenue</h6>
-                                        <h3 class="text-success">TZS <?php echo number_format($total_revenue, 2); ?></h3>
+                                        <h3 class="text-success">UGX <?php echo number_format($total_revenue, 2); ?></h3>
                                         <small><i class="fas fa-arrow-up"></i> All time</small>
                                     </div>
                                 </div>
@@ -136,7 +98,7 @@ $clearance_pending = $pdo->query("
                                 <div class="card stat-card outstanding-card">
                                     <div class="card-body">
                                         <h6 class="text-muted">Outstanding Balance</h6>
-                                        <h3 class="text-danger">TZS <?php echo number_format($total_outstanding, 2); ?></h3>
+                                        <h3 class="text-danger">UGX <?php echo number_format($total_outstanding, 2); ?></h3>
                                         <small><i class="fas fa-exclamation-triangle"></i> Unpaid</small>
                                     </div>
                                 </div>
@@ -188,7 +150,7 @@ $clearance_pending = $pdo->query("
                                                     <br><small class="text-muted"><?php echo $payment['student_number']; ?></small>
                                                 </td>
                                                 <td><?php echo $payment['invoice_number']; ?></td>
-                                                <td class="text-success fw-bold">TZS <?php echo number_format($payment['amount'], 2); ?></td>
+                                                <td class="text-success fw-bold">UGX <?php echo number_format($payment['amount'], 2); ?></td>
                                                 <td>
                                                     <span class="badge bg-info"><?php echo ucfirst(str_replace('_', ' ', $payment['payment_method'])); ?></span>
                                                 </td>
@@ -230,9 +192,9 @@ $clearance_pending = $pdo->query("
                                                     <br><small class="text-muted"><?php echo $invoice['student_number']; ?></small>
                                                 </td>
                                                 <td><small><?php echo $invoice['program_name']; ?></small></td>
-                                                <td>TZS <?php echo number_format($invoice['total_amount'], 2); ?></td>
-                                                <td class="text-success">TZS <?php echo number_format($invoice['amount_paid'], 2); ?></td>
-                                                <td class="text-danger fw-bold">TZS <?php echo number_format($invoice['balance'], 2); ?></td>
+                                                <td>UGX <?php echo number_format($invoice['total_amount'], 2); ?></td>
+                                                <td class="text-success">UGX <?php echo number_format($invoice['amount_paid'], 2); ?></td>
+                                                <td class="text-danger fw-bold">UGX <?php echo number_format($invoice['balance'], 2); ?></td>
                                                 <td><?php echo date('M d, Y', strtotime($invoice['due_date'])); ?></td>
                                                 <td>
                                                     <?php
@@ -308,9 +270,9 @@ $clearance_pending = $pdo->query("
                                                 </td>
                                                 <td><?php echo $clearance['academic_year']; ?></td>
                                                 <td>Semester <?php echo $clearance['semester']; ?></td>
-                                                <td>TZS <?php echo number_format($clearance['total_fees'], 2); ?></td>
-                                                <td class="text-success">TZS <?php echo number_format($clearance['total_paid'], 2); ?></td>
-                                                <td class="text-danger">TZS <?php echo number_format($clearance['balance'], 2); ?></td>
+                                                <td>UGX <?php echo number_format($clearance['total_fees'], 2); ?></td>
+                                                <td class="text-success">UGX <?php echo number_format($clearance['total_paid'], 2); ?></td>
+                                                <td class="text-danger">UGX <?php echo number_format($clearance['balance'], 2); ?></td>
                                                 <td>
                                                     <span class="badge bg-warning"><?php echo ucfirst($clearance['clearance_status']); ?></span>
                                                 </td>
@@ -336,6 +298,7 @@ $clearance_pending = $pdo->query("
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

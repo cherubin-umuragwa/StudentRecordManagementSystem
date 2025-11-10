@@ -23,14 +23,35 @@ $current_year = $student['current_year'] ?? 1;
 $current_semester = $student['current_semester'] ?? 1;
 $current_academic_year = date('Y') . '/' . (date('Y') + 1);
 
+// Check if student has paid functional fees and computer lab fees
+$computer_lab_fee = 140000;
+$functional_fee = ($current_year == 1 && $current_semester == 1) ? 650000 : 530000;
+$required_fees = $computer_lab_fee + $functional_fee;
+
+$payment_check = $pdo->prepare("
+    SELECT SUM(amount) as total_paid 
+    FROM student_payments 
+    WHERE student_id = ? AND status = 'verified' AND academic_year = ? AND semester = ?
+");
+$payment_check->execute([$student_id, $current_year, $current_semester]);
+$payment_result = $payment_check->fetch();
+$total_paid = $payment_result['total_paid'] ?? 0;
+
+$can_register = ($total_paid >= $required_fees);
+$payment_shortfall = $required_fees - $total_paid;
+
 // Handle course registration
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_courses'])) {
-    $selected_courses = $_POST['courses'] ?? [];
-    
-    if (empty($selected_courses)) {
-        $message = "Please select at least one course to register.";
-        $message_type = "warning";
+    if (!$can_register) {
+        $message = "You cannot register for courses until you have paid the full Functional Fee (UGX " . number_format($functional_fee) . ") and Computer Lab Fee (UGX " . number_format($computer_lab_fee) . "). You still need to pay UGX " . number_format($payment_shortfall) . ".";
+        $message_type = "danger";
     } else {
+        $selected_courses = $_POST['courses'] ?? [];
+        
+        if (empty($selected_courses)) {
+            $message = "Please select at least one course to register.";
+            $message_type = "warning";
+        } else {
         try {
             $pdo->beginTransaction();
             
@@ -70,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_courses'])) 
             $pdo->rollBack();
             $message = "Error registering courses: " . $e->getMessage();
             $message_type = "danger";
+        }
         }
     }
 }
@@ -146,22 +168,12 @@ foreach ($my_registrations as $reg) {
     <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="students.php">
-                <i class="fas fa-user-graduate"></i> Student Portal
-            </a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">
-                    <?php echo $student['first_name'] . ' ' . $student['last_name']; ?>
-                </span>
-                <a class="nav-link" href="students.php">Dashboard</a>
-                <a class="nav-link" href="logout.php">Logout</a>
-            </div>
-        </div>
-    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <?php include 'includes/student_navbar.php'; ?>
 
-    <div class="container mt-4">
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-4 py-4">
         <?php if ($message): ?>
             <div class="alert alert-<?php echo $message_type; ?> alert-dismissible fade show" role="alert">
                 <?php echo $message; ?>
@@ -299,6 +311,24 @@ foreach ($my_registrations as $reg) {
             </div>
         </div>
 
+        <!-- Payment Warning -->
+        <?php if (!$can_register): ?>
+        <div class="alert alert-danger">
+            <h5><i class="fas fa-exclamation-triangle me-2"></i>Payment Required</h5>
+            <p>You must pay the following fees before you can register for courses:</p>
+            <ul>
+                <li><strong>Functional Fee:</strong> UGX <?php echo number_format($functional_fee); ?></li>
+                <li><strong>Computer Lab Fee:</strong> UGX <?php echo number_format($computer_lab_fee); ?></li>
+                <li><strong>Total Required:</strong> UGX <?php echo number_format($required_fees); ?></li>
+            </ul>
+            <p><strong>Amount Paid:</strong> UGX <?php echo number_format($total_paid); ?></p>
+            <p><strong>Balance:</strong> UGX <?php echo number_format($payment_shortfall); ?></p>
+            <a href="student_financial_statement.php" class="btn btn-primary">
+                <i class="fas fa-money-bill-wave me-2"></i>Go to Financial Statement
+            </a>
+        </div>
+        <?php endif; ?>
+
         <!-- Available Courses -->
         <div class="card">
             <div class="card-header bg-success text-white">
@@ -364,9 +394,15 @@ foreach ($my_registrations as $reg) {
                         </div>
 
                         <div class="d-grid gap-2 mt-3">
-                            <button type="submit" name="register_courses" class="btn btn-primary btn-lg">
+                            <button type="submit" name="register_courses" class="btn btn-primary btn-lg" 
+                                    <?php echo !$can_register ? 'disabled' : ''; ?>>
                                 <i class="fas fa-check-circle me-2"></i>Register for Selected Courses
                             </button>
+                            <?php if (!$can_register): ?>
+                            <small class="text-danger text-center">
+                                <i class="fas fa-lock me-1"></i>Complete payment to enable registration
+                            </small>
+                            <?php endif; ?>
                             <a href="students.php" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                             </a>
@@ -378,6 +414,7 @@ foreach ($my_registrations as $reg) {
                         No courses available for your current year and semester.
                     </div>
                 <?php endif; ?>
+            </div>
             </div>
         </div>
     </div>
